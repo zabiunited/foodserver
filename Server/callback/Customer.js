@@ -1,5 +1,6 @@
 const Customer = require('../database/Customer')
 const jwt = require('jsonwebtoken')
+require('dotenv').config()
 
 const Signup = async (req, res) => {
     try {
@@ -9,7 +10,7 @@ const Signup = async (req, res) => {
                 if (data == null) {
                     await Customer.create(req.body)
                         .then(data => {
-                            const token = jwt.sign({ data }, 'zabi')
+                            const token = jwt.sign({ data }, process.env.TOKEN)
                             return res.status(200).json(token)
                         })
                         .catch(err => {
@@ -40,7 +41,7 @@ const Login = async (req, res) => {
                 return res.status(400).json("Email is not exist..")
             }
             if (data.password == password) {
-                const token = jwt.sign({ data }, 'zabi')
+                const token = jwt.sign({ data }, process.env.TOKEN)
                 return res.status(200).json(token)
             }
             else {
