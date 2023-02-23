@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
-
+require('dotenv').config()
 const Connection = async () => {
-    const Connect = await mongoose.connect('mongodb+srv://Zabi:23_MongoDb_23@productmanagmentsystem.nsyfr3v.mongodb.net/?retryWrites=true&w=majority')
+    mongoose.set('strictQuery',false)
+    const Connect = await mongoose.connect(process.env.MONGO_DB_URL)
     if(Connect){
         console.log("Database connection build")
     }
