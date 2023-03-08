@@ -1,10 +1,11 @@
 const jwt=require('jsonwebtoken')
 const Customer=require('./database/Customer')
+require('dotenv').config()
 
 const Auth=async(req,res,next)=>{
     try{
         const token=req.headers.authorization.split(" ")[1]
-        const find=jwt.verify(token,'zabi')
+        const find=jwt.verify(token,process.env.TOKEN)
         await Customer.findById(find.data._id)
         .then(data=>{
             if(data==null){
@@ -20,6 +21,7 @@ const Auth=async(req,res,next)=>{
        
     }
     catch(err){
+        console.log(err)
         return res.status(500).json("User not Authorize")
     }
 }
