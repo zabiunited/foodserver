@@ -44,6 +44,24 @@ const ListProduct = async (req, res) => {
     }
 }
 
+const CatagryListProduct = async (req, res) => {
+    try {
+        const { id,list } = req.params
+        const limit = list * 10
+        const skip = (list - 1) * 10
+        await Product.find({catagry_id:id}).limit(limit).skip(skip)
+            .then(data => {
+                return res.status(200).json(data)
+            })
+            .catch(err => {
+                return res.status(401).json(err)
+            })
+    }
+    catch (err) {
+        return res.status(500).json(err)
+    }
+}
+
 const UpdateProduct = async (req, res) => {
     try {
         const { id } = req.params
@@ -84,4 +102,4 @@ const DeleteProduct = async (req, res) => {
         })
 }
 
-module.exports = { AddProduct, ListProduct, UpdateProduct, DeleteProduct }
+module.exports = { AddProduct, ListProduct, CatagryListProduct, UpdateProduct, DeleteProduct }
