@@ -11,7 +11,7 @@ const Signup = async (req, res) => {
                     await Customer.create(req.body)
                         .then(data => {
                             const token = jwt.sign({ data }, process.env.TOKEN)
-                            return res.status(200).json(token)
+                            return res.status(200).json({"token":token,"user":data})
                         })
                         .catch(err => {
                             console.log(err)
@@ -42,7 +42,7 @@ const Login = async (req, res) => {
             }
             if (data.password == password) {
                 const token = jwt.sign({ data }, process.env.TOKEN)
-                return res.status(200).json(token)
+                return res.status(200).json({"token":token,"user":data})
             }
             else {
                 return res.status(400).json("Password is not match")
