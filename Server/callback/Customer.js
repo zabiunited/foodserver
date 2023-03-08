@@ -19,7 +19,7 @@ const Signup = async (req, res) => {
                         })
                 }
                 else{
-                    return res.status(400).json("Customer already exist")
+                    return res.status(400).json({"title":"Customer Alert","message":"Customer already exist"})
                 }
                 // return res.status(400).json(data)
             })
@@ -38,14 +38,14 @@ const Login = async (req, res) => {
     await Customer.findOne({ email: email })
         .then((data) => {
             if (data == null) {
-                return res.status(400).json("Email is not exist..")
+                return res.status(400).json({"title":"Invalid Email","message":"Email is not exist.."})
             }
             if (data.password == password) {
                 const token = jwt.sign({ data }, process.env.TOKEN)
                 return res.status(200).json({"token":token,"user":data})
             }
             else {
-                return res.status(400).json("Password is not match")
+                return res.status(400).json({"title":"Invalid Password","message":"Password is not match"})
             }
         })
         .catch(err => {

@@ -6,7 +6,7 @@ const AddProduct = async (req, res) => {
         await Product.findOne({ title: title })
             .then(async (data) => {
                 if (data != null) {
-                    return res.status(400).json("This product is already exist")
+                    return res.status(400).json({"title":"Product Alert","message":"This Product is already exist"})
                 }
                 await Product.create(req.body)
                     .then(data => {
@@ -78,7 +78,7 @@ const UpdateProduct = async (req, res) => {
                         })
                 }
                 else{
-                    return res.status(400).json("This product is already exist")
+                    return res.status(400).json({"title":"Product Alert","message":"This Product is already exist"})
                 }
             })
             .catch(err => {

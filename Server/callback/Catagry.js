@@ -15,7 +15,7 @@ const AddCatagry = async (req, res) => {
                         })
                 }
                 else {
-                    return res.status(400).json("This Catagry is already exist")
+                    return res.status(400).json({"title":"Catagry Alert","message":"This Catagry is already exist"})
                 }
             })
             .catch(err => {
@@ -59,7 +59,7 @@ const UpdateCatagry=async(req,res)=>{
                 })
             }
             else{
-                return res.status(400).json("This Catagry is already exist")
+                return res.status(400).json({"title":"Catagry Alert","message":"This Catagry is already exist"})
             }
         })
         .catch(err=>{
