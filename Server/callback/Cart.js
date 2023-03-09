@@ -11,7 +11,6 @@ const AddCart = async (req, res) => {
                         .then(async (data) => {
                             await Shiped.findOne({ customer_id: customer_id })
                                 .then(async (data) => {
-                                    console.log("check", data)
                                     if (data == null) {
                                         await Shiped.create({
                                             "totalProduct": 1,
@@ -54,7 +53,7 @@ const AddCart = async (req, res) => {
                 else {
 
                     const quna = data.quantity + quantity
-
+                    console.log("check 1",data ,quantity)
                     // return res.status(401).json("dsdkj")
                     await Cart.findByIdAndUpdate(data._id.toString(), { "quantity": quna })
                         .then(async (data) => {
