@@ -100,7 +100,8 @@ const CustomerListCart = async (req, res) => {
                                 title: pdata.title,
                                 price: pdata.price,
                                 quantity: arr.quantity,
-                                image: pdata.image
+                                image: pdata.image,
+                                cart_id:arr._id
                             })
                             console.log(array)
                         })
