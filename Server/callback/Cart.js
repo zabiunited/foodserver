@@ -1,5 +1,7 @@
 const Cart = require('../database/Cart')
 const Shiped = require('../database/Shiped')
+const Product = require('../database/Product')
+const { default: mongoose } = require('mongoose')
 
 const AddCart = async (req, res) => {
     try {
@@ -52,8 +54,7 @@ const AddCart = async (req, res) => {
                 }
                 else {
 
-                    const quna = data.quantity + quantity
-                    console.log("check 1",data ,quantity)
+                    const quna = parseInt(data.quantity) + parseInt(quantity)
                     // return res.status(401).json("dsdkj")
                     await Cart.findByIdAndUpdate(data._id.toString(), { "quantity": quna })
                         .then(async (data) => {
@@ -90,8 +91,32 @@ const CustomerListCart = async (req, res) => {
     try {
         const { id } = req.params
         await Cart.find({ customer_id: id })
-            .then(data => {
-                return res.status(200).json(data)
+            .then(async (data) => {
+                let array = []
+                const product =await data.map(async (arr) => {
+                    await Product.findById(arr.product_id)
+                        .then(pdata => {
+                            array.push({
+                                title: pdata.title,
+                                price: pdata.price,
+                                quantity: arr.quantity,
+                                image: pdata.image
+                            })
+                            console.log(array)
+                        })
+                        .catch(err => {
+                            console.log("no")
+                            return res.status(401).json(err)
+                        })
+                })
+                
+                await Shiped.findOne({ customer_id: id })
+                    .then(sdata => {
+                        return res.status(200).json({ products: array, shiped: sdata })
+                    })
+                    .catch(err => {
+                        return res.status(401).json(err)
+                    })
             })
             .catch(err => {
                 return res.status(401).json(err)
@@ -109,7 +134,7 @@ const UpdateCart = async (req, res) => {
         await Cart.findById(id)
             .then(async (data) => {
 
-                var fun = quantity == "INC" ? data.quantity + 1 : data.quantity - 1
+                var fun = quantity == "INC" ? parseInt(data.quantity) + 1 : parseInt(data.quantity) - 1
                 await Cart.findByIdAndUpdate(id, { "quantity": fun })
                     .then(async (data) => {
                         await Shiped.findOne({ customer_id: customer_id })
@@ -148,19 +173,19 @@ const DeleteCart = async (req, res) => {
                 let total = data.quantity * data.price
                 await Shiped.findOne({ customer_id: data.customer_id.toString() })
                     .then(async (data) => {
-                        let pri=data.totalPrice-total
-                        await Shiped.findByIdAndUpdate(data._id.toString(),{
-                            "totalProduct":data.totalProduct-1,
-                            "totalPrice":pri,
-                            "shipedTax":data.shipedTax-200,
-                            "finalPrice":(data.shipedTax-200)+pri
+                        let pri = data.totalPrice - total
+                        await Shiped.findByIdAndUpdate(data._id.toString(), {
+                            "totalProduct": data.totalProduct - 1,
+                            "totalPrice": pri,
+                            "shipedTax": data.shipedTax - 200,
+                            "finalPrice": (data.shipedTax - 200) + pri
                         })
-                        .then(data => {
-                            return res.status(200).json("Done")
-                        })
-                        .catch(err => {
-                            return res.status(401).json(err)
-                        })
+                            .then(data => {
+                                return res.status(200).json("Done")
+                            })
+                            .catch(err => {
+                                return res.status(401).json(err)
+                            })
 
                     })
                     .catch(err => {
