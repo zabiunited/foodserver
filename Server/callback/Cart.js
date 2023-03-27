@@ -93,7 +93,7 @@ const CustomerListCart = async (req, res) => {
         await Cart.find({ customer_id: id })
             .then(async (data) => {
                 let array = []
-                const product =await data.map(async (arr) => {
+                const product = data.map(async (arr) => {
                     await Product.findById(arr.product_id)
                         .then(pdata => {
                             array.push({
