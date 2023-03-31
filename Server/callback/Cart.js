@@ -92,32 +92,36 @@ const CustomerListCart = async (req, res) => {
         const { id } = req.params
         await Cart.find({ customer_id: id })
             .then(async (data) => {
+                var length = data.length - 1
                 let array = []
-                const product = data.map(async (arr) => {
+                const product = data.map(async (arr, index) => {
+                    console.log("index", index)
                     await Product.findById(arr.product_id)
-                        .then(pdata => {
+                        .then(async(pdata) => {
                             array.push({
                                 title: pdata.title,
                                 price: pdata.price,
                                 quantity: arr.quantity,
                                 image: pdata.image,
-                                cart_id:arr._id
+                                cart_id: arr._id
                             })
-                            console.log(array)
+                            if (index == length) {
+                                await Shiped.findOne({ customer_id: id })
+                                    .then(sdata => {
+                                        return res.status(200).json({ products: array, shiped: sdata })
+                                    })
+                                    .catch(err => {
+                                        return res.status(401).json(err)
+                                    })
+                            }
                         })
                         .catch(err => {
                             console.log("no")
                             return res.status(401).json(err)
                         })
                 })
-                
-                await Shiped.findOne({ customer_id: id })
-                    .then(sdata => {
-                        return res.status(200).json({ products: array, shiped: sdata })
-                    })
-                    .catch(err => {
-                        return res.status(401).json(err)
-                    })
+
+
             })
             .catch(err => {
                 return res.status(401).json(err)
