@@ -92,6 +92,9 @@ const CustomerListCart = async (req, res) => {
         const { id } = req.params
         await Cart.find({ customer_id: id })
             .then(async (data) => {
+                if(data.length==0){
+                    return res.status(200).json({ products: [], shiped: [] })
+                }
                 var length = data.length - 1
                 let array = []
                 const product = data.map(async (arr, index) => {
